@@ -19,23 +19,15 @@ DATABASE = {
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+
 def connect_db():
     """Establishes a connection to the PostgreSQL database."""
     try:
-        conn = psycopg2.connect(
-            dbname=DATABASE['dbname'],
-            user=DATABASE['user'],
-            password=DATABASE['password'],
-            host=DATABASE['host'],
-            port=DATABASE['port']
-        )
+        conn = psycopg2.connect(**DATABASE)
         logging.info("Database connection successful.")
         return conn
     except psycopg2.Error as e:
         logging.error(f"Database connection error: {e}")
-        return None
-    except UnicodeDecodeError as e:
-        logging.error(f"Unicode decode error: {e}")
         return None
 
 def execute_query(query, params=()):
@@ -57,6 +49,38 @@ def execute_query(query, params=()):
         finally:
             conn.close()
     return None
+
+def update_user_profile(user_id, name=None, surname=None, dob=None, phone=None):
+    """Updates user profile information in the database."""
+    fields = []
+    params = []
+
+    if name:
+        fields.append("name = %s")
+        params.append(name)
+    if surname:
+        fields.append("surname = %s")
+        params.append(surname)
+    if dob:
+        fields.append("dob = %s")
+        params.append(dob)
+    if phone:
+        fields.append("phone = %s")
+        params.append(phone)
+
+    if not fields:
+        logging.warning("No fields provided for update.")
+        return
+
+    query = f"UPDATE users SET {', '.join(fields)} WHERE id = %s"
+    params.append(user_id)
+    execute_query(query, tuple(params))
+
+def fetch_user_profile(user_id):
+    """Fetches user profile information from the database."""
+    query = "SELECT name, surname, dob, phone FROM users WHERE id = %s"
+    results = execute_query(query, (user_id,))
+    return results[0] if results else None
 
 def fetch_courses():
     """Fetches all courses from the PostgreSQL database."""
@@ -124,7 +148,8 @@ def get_user(user_id):
 def is_user_registered(user_id):
     """Checks if a user is registered."""
     query = "SELECT 1 FROM users WHERE id = %s"
-    return execute_query(query, (user_id,)) is not None
+    results = execute_query(query, (user_id,))
+    return bool(results)
 
 def create_tables():
     """Creates the necessary tables."""
@@ -207,6 +232,11 @@ def fetch_location_by_id(location_id):
     query = "SELECT * FROM locations WHERE location_id = %s"
     results = execute_query(query, (location_id,))
     return results[0] if results else None
+
+def delete_advertisement(ad_text):
+    """Deletes an advertisement from the database."""
+    query = "DELETE FROM advertisements WHERE ad_text = %s"
+    execute_query(query, (ad_text,))
 
 def fetch_location_by_name(name):
     """Fetches a location by its name."""

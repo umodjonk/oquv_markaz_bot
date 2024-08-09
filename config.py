@@ -8,12 +8,12 @@ load_dotenv()
 TOKEN = os.getenv('BOT_TOKEN', 'YOUR_DEFAULT_BOT_TOKEN')
 if TOKEN == 'YOUR_DEFAULT_BOT_TOKEN':
     raise ValueError("Bot token is not defined in .env file.")
-
-# Til sozlamalari
+# Channel ID where users need to subscribe
+CHANNEL_ID = 'https://t.me/shahzodtelegramappstore'  # Or use the numeric ID, e.g., -1001234567890
 LANGUAGE = {
     'uz': {
         'start_message': "Salom! Iltimos, tilni tanlang.",
-        'welcome_message': "Siz tilni tanladingiz, kurslarimizdan birini tanlang.",
+        'welcome_message': "Siz tilni tanladingiz. Kurslarimizdan birini tanlang.",
         'courses_button': "Kurslarimiz",
         'about_button': "Biz haqimizda",
         'location_button': "Locatsiya",
@@ -30,9 +30,9 @@ LANGUAGE = {
         'about_button': "О нас",
         'location_button': "Местоположение",
         'contact_button': "Контакт",
-        'register_name': "Пожалуйста, введите ваше имя.",
-        'register_surname': "Пожалуйста, введите вашу фамилию.",
-        'register_dob': "Пожалуйста, введите вашу дату рождения (YYYY-MM-DD).",
-        'register_phone': "Пожалуйста, введите ваш телефонный номер."
+        'register_name': "Введите ваше имя.",
+        'register_surname': "Введите вашу фамилию.",
+        'register_dob': "Введите вашу дату рождения (YYYY-MM-DD).",
+        'register_phone': "Введите ваш телефонный номер."
     }
 }

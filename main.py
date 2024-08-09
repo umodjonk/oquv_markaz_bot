@@ -40,7 +40,15 @@ def handle_admin_actions(message):
 # Ro'yxatdan o'tish jarayonini boshqarish
 @bot.message_handler(func=lambda message: True)
 def handle_registration(message):
-    handle_registration_steps(message)
+    # Check if the message is relevant for registration
+    # You might want to implement more specific checks here
+    if not (message.text.lower() in [
+        'o\'zbekcha', 'русский', 'kurslarimiz', 'admin panel'
+    ] or any(keyword in message.text.lower() for keyword in [
+        'kurs qo\'shish', 'kurs o\'chirish', 'foydalanuvchilarni ko\'rish',
+        'reklama yuborish', 'lokatsiyalarni boshqarish'
+    ])):
+        handle_registration_steps(message)
 
 # Botni ishga tushirish
 if __name__ == '__main__':
